@@ -1,0 +1,148 @@
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import Regale from './Regale';
+
+const SchnellregalDetail = () => {
+    const { id } = useParams();
+    const [schnellregal, setSchnellregal] = useState({});
+    const [schnellregalItem, setSchnellregalItem] = useState({});
+    const [regal, setRegal] = useState('');
+    const [anzahl, setAnzahl] = useState(schnellregalItem.anzahl || 0);
+    const [ausgeliehen, setAusgeliehen] = useState(schnellregalItem.ausgeliehen || 0);
+
+    useEffect(() => {
+        if (schnellregalItem && schnellregalItem.ausgeliehen !== undefined) {
+          setAusgeliehen(schnellregalItem.ausgeliehen);
+        }
+      }, [schnellregalItem]);
+      
+    useEffect(() => {
+        const fetchSchnellregal = async () => {
+            try {
+                const res = await axios.get(`http://localhost:8800/schnellregal/${id}`);
+                setSchnellregal(res.data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        const fetchSchnellregalItem = async () => {
+            try {
+                const res = await axios.get(`http://localhost:8800/schnellregalItem/${id}`);
+                setSchnellregalItem(res.data);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        fetchSchnellregal();
+        fetchSchnellregalItem();
+    }, [id]);
+
+    const containerDiv = {
+        background: "",
+        maxWidth: "1000px",
+        display: "flex"
+    }
+    
+    const leftSide = {
+        background: "",
+        width: "40%",
+    }
+
+    const rightSide = {
+        background: "",
+        width: "60%",
+    }
+
+    const imageStyle = {
+        width: "100%",
+        height: "auto"
+    }
+
+    const titleStyle = {
+        margin: "0",
+        padding: "0",
+        marginLeft: "30px",
+        marginBottom: "20px",
+    }
+
+    const descriptionStyle = {
+        margin: "0",
+        padding: "0",
+        marginLeft: "30px",
+        marginBottom: "30px",
+        fontSize: "14px",
+    }
+
+    const listStyle = {
+        listStyleType: "none",
+        padding: "0",
+        margin: "0",
+        marginLeft: "30px",
+        marginBottom: "50px",
+        fontSize: "14px",
+    }
+
+    const listItemStyle = {
+        marginBottom: "5px"
+    }
+
+    const handleRegalChange = (event) => {
+        setRegal(event.target.value);
+      };
+
+    return (
+
+        <div>
+
+            <div style={{marginBottom: "12px"}}>
+               <Button variant="text" startIcon={<NavigateBeforeIcon />} style={{color: "black", }} >Zurück</Button>
+            </div>
+
+            <div style={containerDiv}>
+
+                <div style={leftSide}>
+                    <img src="https://cdn.onemars.net/sites/perfect-fit_de_yPJUN_JAs8/image/dog_m5_exercise_dog_1_1614946074525.png" alt="Bildbeschreibung" style={imageStyle}/>
+                    <h1 style={{margin: "0", fontSize: "16px", marginBottom: "10px", marginTop: "10px"}}>Kommentar</h1>
+                    <p style={{margin: "0", fontSize: "14px"}}>{schnellregal.Kommentar}</p>
+                </div>
+
+                <div style={rightSide}>
+                    <h1 style={titleStyle}>{schnellregal.title}</h1>
+                    <p style={descriptionStyle}>{schnellregal.description}</p>
+
+                    <ul style={listStyle}>
+                        <li style={listItemStyle}>Klassenstufe: {schnellregal.Klassenstufe}</li>
+                        <li style={listItemStyle}>Kategorie: {schnellregal.Kategorie}</li>
+                        <li style={listItemStyle}>Ablageort: {schnellregal.AktuellePosition}</li>
+                        <li style={listItemStyle}>Fach: {schnellregal.Fach}</li>
+                    </ul>
+
+                    <div>
+                        <Stack spacing={"15px"} direction="row" style={{marginLeft: "30px", marginBottom: "25px", alignItems: "center"}}>
+                            <TextField id="outlined-number1" select label="Regal" SelectProps={{native: true}} InputLabelProps={{shrink: true,}} size="medium" style={{width: "90px"}} onChange={handleRegalChange}>
+                                <Regale/>
+                            </TextField>
+                            <TextField id="outlined-number" label="Anzahl" type="number" InputLabelProps={{shrink: true,}} size="medium" inputProps={{min: 0}} style={{width: "90px"}} disabled={true} defaultValue={ausgeliehen}/>
+                            <p style={{fontSize: "17px"}}>Sammle 10 Punkte</p>
+                        </Stack>
+                    </div>
+
+                    <div style={{background: "", width: "350px", marginLeft: "30px"}}>
+                            <Button variant="contained" style={{width: "100%"}} disabled={regal === '' || anzahl === '' || anzahl === "0" || regal === "Schnellregal"}>Zurübringen</Button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+    
+};
+
+export default SchnellregalDetail;
