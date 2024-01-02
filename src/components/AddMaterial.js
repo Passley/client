@@ -5,9 +5,11 @@ import TextField from '@mui/material/TextField';
 import axios from "axios"
 import Button from '@mui/material/Button';
 import Regale from "./Regale";
+import Fach from "./Fach";
+import Kategorie from "./Kategorie";
 
 const AddMaterial = () => {
-
+    const [errors, setErrors] = useState({});
     const [materialData, setMaterialData] = useState({
         image: "",
         title: "",
@@ -15,12 +17,13 @@ const AddMaterial = () => {
         ISBN: "",
         Kommentar: "",
         Anzahl: "",
-        Ausgeliehen: "2",
+        Ausgeliehen: "0",
         Kategorie: "",
         Fach: "",
         Klassenstufe: "",
         Regal: "",
         AktuellePosition: "",
+        link: ""
     });
 
     const navigate = useNavigate();
@@ -33,18 +36,53 @@ const AddMaterial = () => {
         }));
     };
 
+    const validateForm = () => {
+        const newErrors = {};
+        // Füge für jedes erforderliche Feld eine Validierung hinzu
+        if (!materialData.title) {
+            newErrors.title = "Titel ist erforderlich";
+        }
+        if (!materialData.description) {
+            newErrors.description = "Beschreibung ist erforderlich";
+        }
+        if (!materialData.Anzahl) {
+            newErrors.description = "Beschreibung ist erforderlich";
+        }
+        if (!materialData.Klassenstufe) {
+            newErrors.description = "Beschreibung ist erforderlich";
+        }
+        if (!materialData.Kategorie) {
+            newErrors.description = "Beschreibung ist erforderlich";
+        }
+        if (!materialData.Regal) {
+            newErrors.description = "Beschreibung ist erforderlich";
+        }
+        if (!materialData.AktuellePosition) {
+            newErrors.description = "Beschreibung ist erforderlich";
+        }
+        if (!materialData.Fach) {
+            newErrors.description = "Beschreibung ist erforderlich";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleAddMaterial = async () => {
-        try {
-            await axios.post("http://localhost:8800/materials", materialData);
-            navigate("/");
-        } catch (error) {
-            console.error("Fehler beim Hinzufügen des Materials:", error);
+        if (validateForm()) {
+            try {
+                await axios.post("http://localhost:8800/materials", materialData);
+                navigate("/");
+            } catch (error) {
+                console.error("Fehler beim Hinzufügen des Materials:", error);
+            }
         }
     };
 
     return (
 
         <div style={{width: "800px", background: ""}}>
+
             <div style={{background: "", margin: "10px"}}>
                 <TextField
                 required
@@ -86,7 +124,7 @@ const AddMaterial = () => {
                         required
                         id="outlined-number"
                         label="Klassenstufe"
-                        type="number"
+                        type=""
                         inputProps={{min: 1}}
                         style={{width: "100%"}}
                         onChange={handleInputChange}
@@ -95,7 +133,7 @@ const AddMaterial = () => {
                 </div>
                 <div style={{marginLeft: "5px", width: "33.33%"}}>
                     <TextField required name="Kategorie" style={{width: "100%"}} id="outlined-number1" select label="Kategorie" SelectProps={{native: true}} onChange={handleInputChange}>
-                        <Regale/>
+                        <Kategorie/>
                     </TextField>
                 </div>
             </div>
@@ -115,8 +153,8 @@ const AddMaterial = () => {
 
             <div style={{display: "flex", background: "", margin: "10px"}}>
                 <div style={{marginRight: "5px", width: "50%"}}>
-                    <TextField required name="Fach" style={{width: "100%"}} id="outlined-number1" select label="Fach" SelectProps={{native: true}} onChange={handleInputChange}>
-                        <Regale/>
+                    <TextField required name="Fach" style={{width: "100%"}} id="outlined-number1" select label="Unterrichtsfach" SelectProps={{native: true}} onChange={handleInputChange}>
+                        <Fach/>
                     </TextField>
                 </div>
                 <div style={{marginLeft: "5px", width: "50%"}}>
@@ -148,6 +186,16 @@ const AddMaterial = () => {
                     style={{width: "100%"}}
                     onChange={handleInputChange}
                     name="Image"
+                />
+            </div>
+
+            <div style={{background: "", margin: "10px"}}>
+                <TextField
+                    id="outlined-text"
+                    label="Link"
+                    style={{width: "100%"}}
+                    onChange={handleInputChange}
+                    name="link"
                 />
             </div>
 

@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Regale from './Regale';
 
@@ -13,14 +13,6 @@ const SchnellregalDetail = () => {
     const [schnellregal, setSchnellregal] = useState({});
     const [schnellregalItem, setSchnellregalItem] = useState({});
     const [regal, setRegal] = useState('');
-    const [anzahl, setAnzahl] = useState(schnellregalItem.anzahl || 0);
-    const [ausgeliehen, setAusgeliehen] = useState(schnellregalItem.ausgeliehen || 0);
-
-    useEffect(() => {
-        if (schnellregalItem && schnellregalItem.ausgeliehen !== undefined) {
-          setAusgeliehen(schnellregalItem.ausgeliehen);
-        }
-      }, [schnellregalItem]);
       
     useEffect(() => {
         const fetchSchnellregal = async () => {
@@ -98,12 +90,18 @@ const SchnellregalDetail = () => {
         setRegal(event.target.value);
       };
 
+    const navigate = useNavigate()
+
+    const handleBackClick = (event) => {
+        navigate("/schnellregal")
+    };
+
     return (
 
         <div>
 
             <div style={{marginBottom: "12px"}}>
-               <Button variant="text" startIcon={<NavigateBeforeIcon />} style={{color: "black", }} >Zurück</Button>
+               <Button variant="text" startIcon={<NavigateBeforeIcon />} style={{color: "black", }} onClick={handleBackClick}>Zurück</Button>
             </div>
 
             <div style={containerDiv}>
@@ -130,13 +128,19 @@ const SchnellregalDetail = () => {
                             <TextField id="outlined-number1" select label="Regal" SelectProps={{native: true}} InputLabelProps={{shrink: true,}} size="medium" style={{width: "90px"}} onChange={handleRegalChange}>
                                 <Regale/>
                             </TextField>
-                            <TextField id="outlined-number" label="Anzahl" type="number" InputLabelProps={{shrink: true,}} size="medium" inputProps={{min: 0}} style={{width: "90px"}} disabled={true} defaultValue={ausgeliehen}/>
+                            <TextField id="outlined-number" label="Anzahl" type="number" InputLabelProps={{shrink: true,}} size="medium" inputProps={{min: 0}} style={{width: "90px"}} disabled={true} value={schnellregal.Ausgeliehen}/>
                             <p style={{fontSize: "17px"}}>Sammle 10 Punkte</p>
                         </Stack>
                     </div>
 
                     <div style={{background: "", width: "350px", marginLeft: "30px"}}>
-                            <Button variant="contained" style={{width: "100%"}} disabled={regal === '' || anzahl === '' || anzahl === "0" || regal === "Schnellregal"}>Zurübringen</Button>
+                            <Button variant="contained" style={{width: "100%", marginBottom: "8px"}} disabled={regal === '' || regal === "Schnellregal"}>Zurückbringen</Button>
+                            
+                            {schnellregal.link !== null && ( 
+                                <a href={schnellregal.link} target="_blank" rel="noopener noreferrer">
+                                    <Button variant="contained" style={{width: "100%"}}>Nachkaufen</Button>
+                                </a>    
+                            )}
                     </div>
                 </div>
             </div>

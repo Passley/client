@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Regale from './Regale';
 
@@ -112,15 +112,20 @@ const MaterialDetail = () => {
         } else if(anzahl !== 0 && selectedTeacher !== '') {
             return false;
         } else return true
+      };
 
-      }
+      const navigate = useNavigate()
+
+      const handleBackClick = (event) => {
+        navigate("/")
+      };
 
     return (
 
         <div>
 
             <div style={{marginBottom: "12px"}}>
-               <Button variant="text" startIcon={<NavigateBeforeIcon />} style={{color: "black", }} >Zurück</Button>
+               <Button variant="text" startIcon={<NavigateBeforeIcon />} style={{color: "black", }} onClick={handleBackClick}>Zurück</Button>
             </div>
 
             <div style={containerDiv}>
@@ -168,7 +173,12 @@ const MaterialDetail = () => {
 
                             </TextField>
                         </Stack>
-                        <Button variant="contained" style={{width: "100%"}} disabled={regal === '' || anzahl === 0}>zurückgeben</Button>
+                        <Button variant="contained" style={{width: "100%", marginBottom: "5px"}} disabled={regal === '' || anzahl === 0}>zurückgeben</Button>
+                        {material.link !== "" && ( 
+                            <a href={material.link} target="_blank" rel="noopener noreferrer">
+                                <Button variant="contained" style={{width: "100%"}}>Nachkaufen</Button>
+                            </a>    
+                        )}
                     </div>
                     )}
 
@@ -181,7 +191,12 @@ const MaterialDetail = () => {
                                     <option key={teacherItem.id}>{`${teacherItem.Vorname} ${teacherItem.Nachname}`}</option>
                                 ))}
                             </TextField>
-                            <Button variant="contained" style={{width: "100%"}} disabled={!(anzahl !== 0 && selectedTeacher1 !== '')}>Von Lehrer ausleihen</Button>
+                            <Button variant="contained" style={{width: "100%", marginBottom: "5px"}} disabled={!(anzahl !== 0 && selectedTeacher1 !== '')}>Von Lehrer ausleihen</Button>
+                            {material.link !== "" && ( 
+                                <a href={material.link} target="_blank" rel="noopener noreferrer">
+                                    <Button variant="contained" style={{width: "100%"}}>Nachkaufen</Button>
+                                </a>    
+                            )}
                         </Stack>
                     </div>
                     )}

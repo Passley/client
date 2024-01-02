@@ -3,7 +3,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import UpdateMaterials from "./components/UpdateMaterial";
+import MaterialEdit from "./components/MaterialEdit";
 import AddPage from "./components/pages/AddPage";
 import AllMaterials from "./components/pages/AllMaterials";
 import AusleihenDetail from "./components/pages/AusleihenDetail";
@@ -20,7 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<AllMaterials/>}/>
           <Route path="/add" element={<AddPage/>}/>
-          <Route path="/update" element={<UpdateMaterials/>}/>
+          <Route path="/update/:id" element={<MaterialEdit/>}/>
           <Route path="materials/:id" element={<AusleihenDetail/>}/>
           <Route path="schnellregal" element={<SchnellregalPage/>}/>
           <Route path="schnellregal/:id" element={<SchnellregalDetailPage/>}/>
